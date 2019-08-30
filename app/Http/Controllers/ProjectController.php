@@ -25,7 +25,11 @@ class ProjectController extends Controller
         $project=Datatables::of($model)
         ->addColumn('company', function(Project $project) {
             return  $project->company->name;
-        })->toJson();
+        })->addColumn('action', function (Project $project) {
+            return '<a href="#edit-'.$project->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+        })
+        ->editColumn('id', 'ID: {{$id}}')
+        ->toJson();
       
         return $project;
     }
