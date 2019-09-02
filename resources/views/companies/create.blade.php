@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="col-md-5">
-@if ($message = Session::get('success'))
+@if ($message = Session::get('error'))
 <div class="alert alert-success alert-block">
 	<button type="button" class="close" data-dismiss="alert">×</button>	
         <strong>{{ $message }}</strong>
@@ -17,17 +17,13 @@
           
               <div class="col-md-10 mb-6">
                 <label for="validationServer01">Company Name</label>
-                <input type="text" class="form-control is-valid" name="name" id="validationServer01" placeholder="First name" value="" required>
-                <div class="valid-feedback">
-                  Looks good!
-                </div>
+                <input type="text" class="form-control " name="name" placeholder="First name" value="">
+                @if ($errors->has('name')) <p style="color:red;">{{ $errors->first('name') }}</p> @endif
               </div>
               <div class="col-md-10 mb-6">
                 <label for="validationServer02">Description</label>
-                <input type="text" class="form-control is-valid" name="description" id="validationServer02" placeholder="Last name" value="" required>
-                <div class="valid-feedback">
-                  Looks good!
-                </div>
+                <input type="text" class="form-control " name="description" id="validationServer02" placeholder="Last name" value="">
+                @if ($errors->has('description')) <p style="color:red;">{{ $errors->first('description') }}</p> @endif
             </div>
             <button class="btn btn-primary m-4" type="submit">Add Company</button>
           </form>

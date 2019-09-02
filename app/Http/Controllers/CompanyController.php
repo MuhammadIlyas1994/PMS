@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class CompanyController extends Controller
@@ -16,8 +17,13 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $companies= Company::all();
-       return view('companies.index',compact('companies'));
+         if(Auth::check()){
+            $companies= Company::where('user_id',Auth::user()->id)->get();
+       
+            return view('companies.index',compact('companies'));
+        }       
+        return view('auth.login');
+    
     }
 
     /**
@@ -39,19 +45,32 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-       $validate= $request->validate([
+    if(Auth::check()){
+      
+        $request->validate([
             'name'=> 'required | min:5',
-            'description' => 'required'
+            'description' => 'required',
+            
         ]);
-        
-        $company=Company::create($validate);
+
+        $company=Company::create([
+            'name'=> $request->name,
+            'description' =>$request->description,
+            'user_id'=>Auth::user()->id,
+        ]);
        
         if($company){
-            return back()->with('success','successfullly');
+            return redirect()->route('company.show',['company'=> $company->id]);
         }
         else{
             return back()->with('error','Inserting error');
         }
+    }
+    else{
+        return redirect('login');
+    }
+    
+    
         
     }
 
@@ -64,8 +83,8 @@ class CompanyController extends Controller
     public function show(Company $company)
     {
         $company=Company::find($company->id);
-        $projects=Project::all();
-        return view('companies.show',compact('company','projects'));
+       
+        return view('companies.show',compact('company'));
     }
 
     /**

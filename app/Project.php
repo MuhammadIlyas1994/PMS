@@ -10,10 +10,10 @@ class Project extends Model
 {
     protected $fillable=['company_id','days' ,'name' ,'description'];
     public function company(){
-        return  $this->belongsTo('App\Company');
+        return  $this->belongsTo(Company::class);
     }
     public function user(){
-        return  $this->belongToMany(User::class);
+        return  $this->belongsToMany(User::class);
     }
    
 }

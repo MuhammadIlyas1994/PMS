@@ -6,53 +6,38 @@
     <div class="form-group col-md-12">
       <a class="btn btn-primary" href="{{ route('projects.create')}}">Add Project</a>
       </div>
-  </div>
 </div>
-<table class="table table table-bordered" id="table_id">
+<table class="table table-bordered" >
   <thead>
       <tr>
           <th>Id</th>
           <th> project Name</th>
           <th>Description</th>
-          <th>Created At</th>
-          <th>Updated At</th>
-          <th>Company Name</th>
-          <th>Action</th>
-         
-         
+          <th colspan="2">Action</th>
+                 
       </tr>
+      <tbody>
+      @foreach ($projects as $project)
+      <tr>
+        {{--  {{dd($project)}}  --}}
+          <td>{{$project->id}}</td>
+          <td>{{$project->name}}</td>
+          <td>{{$project->description}}</td>
+           
+          <td><a class="btn btn-primary" href="{{route('projects.edit',$project->id)}}">Edit</a> </td>
+           <td> <form action="{{ route('projects.destroy', $project->id)}}" method="post">
+                @csrf
+                @method('DELETE')
+                <button class="btn btn-danger" type="submit">Delete</button>
+              </form>
+           </td>
+        </tr>
+      @endforeach
+      
+      </tbody>
   </thead>
 </table>
 @endsection
  
-@section('script')
-{{-- Jquery CDN --}}
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-{{-- DataTable CDN --}}
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-
-{{-- JavaScript Papulate data and Dom function --}}
-<script>
-  {{-- initilization the dom --}}
-$(document).ready( function () {
-  $('#table_id').DataTable({
-    processing: true,
-    serverSide: true,
-    ajax: '{!! route('get.project') !!}',
-    columns: [
-            { data: 'id', name: 'id' },
-            { data: 'name', name: 'name' },
-            { data: 'description', name: 'description' },
-            { data: 'created_at', name: 'created_at' },
-            { data: 'updated_at', name: 'updated_at' },
-            { data: 'company', name: 'company' },
-            {data: 'action', name: 'action', orderable: false, searchable: false}
-           
-        ]
-  });
-} );
-{{-- End  --}}
 
 
-</script>
-@endsection

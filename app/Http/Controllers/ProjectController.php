@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\Project;
-use Yajra\Datatables\Datatables;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -16,23 +18,34 @@ class ProjectController extends Controller
      */
     public function index()
     {
-         return view('projects.index',compact('getProjects'));
+       
+        
+        $dt = Carbon::now()->toDateString();
+        $projects=Project::where('id', Auth::user()->id)->get();
+       
+        // $companies=Company::all();
+        return view('projects.index',compact('projects'));
+      
+              
     }
 
-    public function getProject(){
+    // public function getProject(){
        
-        $model = Project::query();
-        $project=Datatables::of($model)
-        ->addColumn('company', function(Project $project) {
-            return  $project->company->name;
-        })->addColumn('action', function (Project $project) {
-            return '<a href="#edit-'.$project->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
-        })
-        ->editColumn('id', 'ID: {{$id}}')
-        ->toJson();
+    //     $model = Project::query();
+    //     $project=Datatables::of($model)
+    //     ->addColumn('id', function(Project $project) {
+    //         return  '<a href="' .route('projects.show', $project->id) .'">'.$project->name.'</a>';
+    //     })
+    //     ->addColumn('company', function(Project $project) {
+    //         return  $project->company->name;
+    //     })->addColumn('action', function (Project $project) {
+    //         return '<a href="#edit-'.$project->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+    //     })->editColumn('id', 'ID: {{$id}}')
+        
+    //     ->toJson();
       
-        return $project;
-    }
+    //     return $project;
+    // }
     /**
      * Show the form for creating a new resource.
      *
@@ -40,8 +53,9 @@ class ProjectController extends Controller
      */
     public function create()
     {
+        
        $project=Project::all();
-       $companies=Company::get();
+       $companies=Company::all();
        return view('projects.create',compact('project','companies'));
     }
 
@@ -53,6 +67,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+       
        $validate=$request->validate([
            'name' => 'required | min:3',
            'description' => 'required',
@@ -60,15 +75,18 @@ class ProjectController extends Controller
            'company_id' => 'required',
            
        ]);
+      
+     
       if(Project::create($validate))
       {
+      
           return back()->with('success','You have successfully added Project');
       }
       else{
           return back()->with('error','Inserting Error');
       }
-    
 
+        
     }
 
     /**
@@ -79,7 +97,9 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+       $project=Project::findOrfail($project->id);
+      
+       return view('projects.show',compact('project'));
     }
 
     /**
@@ -91,8 +111,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $project=Project::findOrFail($project->id);
-        $companies=Company::all();
-        return view('projects.edit',compact('project','companies'));
+       
+        return view('projects.edit',compact('project'));
     }
 
     /**
@@ -131,6 +151,7 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $projectDelet=Project::finOrFail($project->id);
+        $request->project()->detach($project_id);
         $projectDelet->delete();
        
     }

@@ -45,15 +45,15 @@ class User extends Authenticatable
         return  $this->hasMany('Comments');
     }
     public function role(){
-        return  $this->belongTo('Role');
+        return  $this->belongsTo('Role');
     }
     public function companies(){
         return  $this->hasMany('Company');
     }
     public function tasks(){
-        return  $this->belongToMany('Task');
+        return  $this->belongsToMany('Task');
     }
     public function projects(){
-        return  $this->belongToMany('Project');
+        return  $this->belongsToMany('Project');
     }
 }

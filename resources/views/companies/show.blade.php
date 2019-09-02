@@ -12,20 +12,18 @@
             <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
           </div>
         </div>
-  
-        <div class="container">
-         
+          <div class="container bg-white">
           <div class="row">
-     
-            @foreach ($projects as $project)
+     <div class="col-md-12">
+        <a class=" float-right btn btn-default" href="/projects/create" role="button">Add Project</a>
+            @foreach ($company->projects as $project)
              <div class="col-md-4">
               <h2>{{$project->name}}</h2>
               <p>{{ $project->description }}</p>
               <p><a class="btn btn-secondary" href="/projects/{{$project->id}}" role="button">View details »</a></p>
             </div>
             @endforeach
-           
-          <hr>
+     </div>
   
         </div> <!-- /container -->
        
@@ -45,9 +43,15 @@
                   Add New member
               </a>
             </li>
+
             <li class="nav-item">
               <a class="nav-link" href="/company/{{$company->id}}/edit">
                   Edit
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('company.create')}}">
+                  My Companies
               </a>
             </li>
             <li class="nav-item">
